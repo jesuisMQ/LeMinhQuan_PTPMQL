@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form action="action.php" method="get"  oninput="x.value=parseInt(a.value)+parseInt(b.value)">
+    
+        
+    <button type="button" onclick="alert('you just clicked me')">Click here</button>
+    
+    <fieldset>
+        <legend>Thông tin năm và tháng</legend>
+        <label for="year">Choose a year</label><br>
+        <select id="year" name="year" size ="2" multiple>
+            <option selected value="2025">2025</option>
+            <option value="2026">2026</option>
+            <option value="2026">2027</option>
+            <option value="2026">2028</option>
+        </select><br>
+        Hold down the Ctrl (windows) button to select multiple options.
+        <label for="month">Choose a month</label><br>
+        <select id="month" name="year" size ="2">
+            <option selected value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+        </select><br>
+        <label>Text area:</label><br>
+        <textarea name="message" rows="3" cols="4">
+            You can type here
+        </textarea><br>
+        <input list="gender" name="gender">
+        <datalist id="gender">
+            <option value ="male">
+            <option value="female">
+        </datalist><br>
+               
+        0<input type="range"  id="a" name="a" value="50">
+        100 +
+        <input type="number" id="b" name="b" value="50">
+        =
+        <output name="x" for="a b"></output>
+        <br><br>
+        <input type="submit" value="Submit">
+
+    </fieldset>
+    </form>
+    
+</body>
+</html>

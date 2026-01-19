@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Image Maps</h2>
+<p>Click on the computer, the phone, or the cup of coffee to go to a new page and read more about the topic:</p>
+
+<img id="img" src="/HTML/img/Screenshot 2024-04-05 000144.png" alt="haicau" usemap="#haicaucuaLMQ" width="400" height="379">
+<map name="haicaucuaLMQ">
+  <area shape="circle" coords="29,40,56,58" alt="eye" href="eye.htm">
+  <area shape="rect" coords="61,62,80,82" alt="nose" href="nose.htm">
+  <area shape="rect" coords="35,91,111,117" alt="mouth" href="mouth.htm">
+</map>
+
+<script>
+const img = document.getElementById("img");
+
+img.addEventListener("click", function (e) {
+  const rect = img.getBoundingClientRect();
+
+  const scaleX = img.naturalWidth / rect.width;
+  const scaleY = img.naturalHeight / rect.height;
+
+  const x = (e.clientX - rect.left) * scaleX;
+  const y = (e.clientY - rect.top) * scaleY;
+
+  console.log(
+    "X:", Math.round(x),
+    "Y:", Math.round(y)
+  );
+});
+</script>
+</body>
+</html>

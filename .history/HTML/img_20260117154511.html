@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Image Maps</h2>
+<p>Click on the computer, the phone, or the cup of coffee to go to a new page and read more about the topic:</p>
+
+<img id="img" src="/HTML/img/Screenshot 2024-04-05 000144.png" alt="haicau" usemap="#haicaucuaLMQ" width="400" height="379">
+<map name="haicaucuaLMQ">
+  <area shape="circle" coords="100,104,30" alt="eye" href="eye.htm" onclick="myFunction()">
+<area shape="rect" coords="141,129,182,164" alt="eye" href="nose.htm"onclick="myFunction1()">
+<area shape="rect" coords="91,189,263,243" alt="eye" href="mouth.htm"onclick="myFunction2()">
+</map>
+<script>
+function myFunction() {
+  alert("You clicked the coffee cup!");
+}
+function myFunction1() {
+  alert("You clicked the coffee cup!");
+}
+function myFunction2() {
+  alert("You clicked the coffee cup!");
+}
+
+</script>
+
+</body>
+</html>

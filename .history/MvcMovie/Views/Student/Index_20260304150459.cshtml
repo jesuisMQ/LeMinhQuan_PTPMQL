@@ -1,0 +1,31 @@
+@model IEnumerable<MvcMovie.Models.Entities.Student>
+
+@{
+    ViewData["Title"]="Index";
+}
+<h1>Index</h1>
+<a asp-action="Create">Create new</a>
+<table>
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model=>model.FullName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model=>model.StudentCode)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var item in Model){
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem=>item.FullName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem=>item.StudentCode)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

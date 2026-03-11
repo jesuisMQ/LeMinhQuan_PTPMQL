@@ -1,0 +1,16 @@
+@model MvcMovie.Models.Entities.Student
+@{
+    ViewData["Title"]="Edit";
+}
+<h2>Edit Student</h2>
+<form asp-action="Edit" method="post">
+    <div class="form-group">
+        <label for="StudentCode">Ma SV</label>
+        <input type="text" class="form-control" name="StudentCode" value="@Model.StudentCode"/>
+    </div>
+    <div class="form-group">
+        <label for="FullName">Ho Ten SV</label>
+        <input type="text" class="form-control" name="FullName" value="@Model.FullName" />
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>

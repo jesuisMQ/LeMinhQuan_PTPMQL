@@ -1,0 +1,15 @@
+@model MvcMovie.Models.Entities.Student
+@{
+    ViewData["Title"]="Create";
+}
+<h1>Create</h1>
+<h4>Student</h4>
+<hr/>
+<form asp-action="Create" method="post">
+    <input type="text" asp-for="FullName" placeholder="Nhập tên vào đây"/>
+    <span asp-validation-for="FullName"></span>
+    <input type="text" asp-for="StudentCode" placeholder="Nhập msv vào đây"/>
+    <span asp-validation-for="StudentCode"></span>
+    <input type="submit" value="send data"/>
+</form>
+<h2>@ViewBag.message</h2>

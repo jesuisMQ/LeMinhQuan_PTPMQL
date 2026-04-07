@@ -9,6 +9,7 @@ using MvcMovie.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 using MvcMovie.Data;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Linq.Expressions;
 namespace MvcMovie.Controllers
 {
     
@@ -25,6 +26,22 @@ namespace MvcMovie.Controllers
             var model=await _context.Students.ToListAsync();
             return View(model);
         }
+         public async Task<IActionResult> Details(string id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var student = await _context.Students
+                .FirstOrDefaultAsync(m => m.StudentCode == id);
+            if (student == null)
+            {
+                return NotFound();
+            }
+
+            return View(student);
+        }
         public IActionResult Create()
         {
             return View();
@@ -32,7 +49,7 @@ namespace MvcMovie.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         
-        public async Task<IActionResult> Create([Bind("FullName,StudentCode")] Student std)
+        public async Task<IActionResult> Create([Bind("FullName,StudentCode,Email")] Student std)
         {
             if (ModelState.IsValid)
             {
@@ -44,28 +61,76 @@ namespace MvcMovie.Controllers
         }
         public async Task<IActionResult>Edit(String id)
         {
+            if (id == null || _context.Students == null)
+            {
+                return NotFound();
+                
+            }
+           
             var std =await _context.Students.FindAsync(id);
+            if (std == null)
+            {
+                return NotFound();
+            }
             return View(std);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Student std)
+        public async Task<IActionResult> Edit( string id, [Bind("FullName,StudentCode,Email")] Student std)
         {
-            _context.Students.Update(std);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            if(id!=std.StudentCode)
+            {
+                return NotFound();
+            }
+            if (ModelState.IsValid)
+            {
+                try{
+                _context.Students.Update(std);
+                await _context.SaveChangesAsync();
+                }
+            
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!PersonExists(std.StudentCode))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View(std);
         }
         public async Task<IActionResult>Delete(String id)
         {
+            if(id==null|| _context.Students == null)
+            {
+                return NotFound();
+            }
             var std=await _context.Students.FirstOrDefaultAsync(q=>q.StudentCode==id);
+            if (std == null)
+            {
+                return NotFound();
+            }
 
             return View(std);
         }
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(String id)
-        {    var std =await _context.Students.FindAsync(id);
-            _context.Students.Remove(std);
+        {
+            if (_context.Students==null)
+            {
+                return Problem("Entity set 'ApplicationDbcontext.Students' is null.");
+            }
+            var std =await _context.Students.FindAsync(id);
+            if (std != null)
+            {
+                _context.Students.Remove(std);
+            }
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
@@ -85,7 +150,10 @@ namespace MvcMovie.Controllers
         {
             return View("Error!");
         }
-        
+        private bool PersonExists(string id)
+        {
+            return(_context.Students?.Any(q=>q.StudentCode==id)).GetValueOrDefault();
+        }
 
     }
 }

@@ -6,11 +6,21 @@
 <form asp-action="Edit" method="post">
     <div class="form-group">
         <label for="StudentCode">Ma SV</label>
-        <input type="text" class="form-control" name="StudentCode" value="@Model.StudentCode"/>
+        <input readonly asp-for="StudentCode" type="text" class="form-control" name="StudentCode" value="@Model.StudentCode"/>
+        <span asp-validation-for="StudentCode"></span>
     </div>
     <div class="form-group">
         <label for="FullName">Ho Ten SV</label>
-        <input type="text" class="form-control" name="FullName" value="@Model.FullName" />
+        <input asp-for="FullName" type="text" class="form-control" name="FullName" value="@Model.FullName" />
+        <span asp-validation-for="FullName"></span>
+    </div>
+    <div class="form-group">
+        <label for="FullName">Email</label>
+        <input asp-for="Email" type="text" class="form-control" name="email" value="@Model.Email" />
+        <span asp-validation-for="Email"></span>
     </div>
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

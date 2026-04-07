@@ -6,10 +6,16 @@
 <h4>Student</h4>
 <hr/>
 <form asp-action="Create" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <input type="text" asp-for="FullName" placeholder="Nhập tên vào đây"/>
     <span asp-validation-for="FullName"></span>
     <input type="text" asp-for="StudentCode" placeholder="Nhập msv vào đây"/>
     <span asp-validation-for="StudentCode"></span>
+    <input type="text" asp-for="Email" placeholder="Nhập email vào đây"/>
+    <span asp-validation-for="Email"></span>
     <input type="submit" value="send data"/>
 </form>
 <h2>@ViewBag.message</h2>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

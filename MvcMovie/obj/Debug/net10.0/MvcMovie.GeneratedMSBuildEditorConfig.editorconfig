@@ -46,6 +46,26 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[D:/NETCOREAPI/NetCoreAPI/MvcMovie/Views/Quan/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUXVhblxDcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/NETCOREAPI/NetCoreAPI/MvcMovie/Views/Quan/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUXVhblxEZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/NETCOREAPI/NetCoreAPI/MvcMovie/Views/Quan/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUXVhblxEZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/NETCOREAPI/NetCoreAPI/MvcMovie/Views/Quan/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUXVhblxFZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/NETCOREAPI/NetCoreAPI/MvcMovie/Views/Quan/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUXVhblxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/NETCOREAPI/NetCoreAPI/MvcMovie/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
@@ -60,6 +80,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [D:/NETCOREAPI/NetCoreAPI/MvcMovie/Views/Student/Delete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3R1ZGVudFxEZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/NETCOREAPI/NetCoreAPI/MvcMovie/Views/Student/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3R1ZGVudFxEZXRhaWxzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/NETCOREAPI/NetCoreAPI/MvcMovie/Views/Student/Edit.cshtml]

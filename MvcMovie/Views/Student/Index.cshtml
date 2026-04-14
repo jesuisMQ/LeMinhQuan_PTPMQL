@@ -1,4 +1,4 @@
-@model IEnumerable<MvcMovie.Models.Entities.Student>
+@model IEnumerable<MvcMovie.Models.ViewModels.StudentVM>
 
 @{
     ViewData["Title"]="Index";
@@ -17,6 +17,9 @@
             <th>
                 @Html.DisplayNameFor(model=>model.Email)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FacultyName)
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -30,6 +33,9 @@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem=>item.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FacultyName)
                 </td>
                 <td>
                 <a asp-action="Edit" asp-route-id="@item.StudentCode" class="btn btn-warning">Edit</a>

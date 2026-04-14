@@ -6,13 +6,15 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using MvcMovie.Models.Entities;
+using MvcMovie.Models.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using MvcMovie.Data;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Linq.Expressions;
+using Microsoft.AspNetCore.Mvc.Rendering;
 namespace MvcMovie.Controllers
 {
-    
+
     public class StudentController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -20,13 +22,20 @@ namespace MvcMovie.Controllers
         {
             _context = context;
         }
-       // GET: Movies
+        // GET: Movies
         public async Task<IActionResult> Index()
         {
-            var model=await _context.Students.ToListAsync();
-            return View(model);
+            var result = await _context.Students
+                            .Select(s => new StudentVM
+                            {
+                                StudentCode = s.StudentCode,
+                                FullName = s.FullName,
+                                FacultyName = s.Faculty!.FacultyName
+                            })
+                            .ToListAsync();
+            return View(result);
         }
-         public async Task<IActionResult> Details(string id)
+        public async Task<IActionResult> Details(string id)
         {
             if (id == null)
             {
@@ -34,7 +43,14 @@ namespace MvcMovie.Controllers
             }
 
             var student = await _context.Students
-                .FirstOrDefaultAsync(m => m.StudentCode == id);
+            .Where(s => s.StudentCode == id)   // ✔ lọc trước
+            .Select(s => new StudentVM
+            {
+                StudentCode = s.StudentCode,
+                FullName = s.FullName,
+                FacultyName = s.Faculty != null ? s.Faculty.FacultyName : "N/A"
+            })
+            .FirstOrDefaultAsync();
             if (student == null)
             {
                 return NotFound();
@@ -42,14 +58,16 @@ namespace MvcMovie.Controllers
 
             return View(student);
         }
+        // GET: Student/Create
         public IActionResult Create()
         {
+            ViewData["FacultyID"] = new SelectList(_context.Faculties, "FacultyID", "FacultyName");
             return View();
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        
-        public async Task<IActionResult> Create([Bind("FullName,StudentCode,Email")] Student std)
+
+        public async Task<IActionResult> Create([Bind("FullName,StudentCode,Email,FacultyID")] Student std)
         {
             if (ModelState.IsValid)
             {
@@ -57,38 +75,41 @@ namespace MvcMovie.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["FacultyID"] = new SelectList(_context.Faculties, "FacultyID", "FacultyName", std.FacultyID);
             return View(std);
         }
-        public async Task<IActionResult>Edit(String id)
+        public async Task<IActionResult> Edit(String id)
         {
             if (id == null || _context.Students == null)
             {
                 return NotFound();
-                
+
             }
-           
-            var std =await _context.Students.FindAsync(id);
+
+            var std = await _context.Students.FindAsync(id);
             if (std == null)
             {
                 return NotFound();
             }
+            ViewData["FacultyID"] = new SelectList(_context.Faculties, "FacultyID", "FacultyName", std.FacultyID);
             return View(std);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit( string id, [Bind("FullName,StudentCode,Email")] Student std)
+        public async Task<IActionResult> Edit(string id, [Bind("FullName,StudentCode,Email,FacultyID")] Student std)
         {
-            if(id!=std.StudentCode)
+            if (id != std.StudentCode)
             {
                 return NotFound();
             }
             if (ModelState.IsValid)
             {
-                try{
-                _context.Students.Update(std);
-                await _context.SaveChangesAsync();
+                try
+                {
+                    _context.Students.Update(std);
+                    await _context.SaveChangesAsync();
                 }
-            
+
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!PersonExists(std.StudentCode))
@@ -102,15 +123,16 @@ namespace MvcMovie.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["FacultyID"] = new SelectList(_context.Faculties, "FacultyID", "FacultyName", std.FacultyID);
             return View(std);
         }
-        public async Task<IActionResult>Delete(String id)
+        public async Task<IActionResult> Delete(String id)
         {
-            if(id==null|| _context.Students == null)
+            if (id == null || _context.Students == null)
             {
                 return NotFound();
             }
-            var std=await _context.Students.FirstOrDefaultAsync(q=>q.StudentCode==id);
+            var std = await _context.Students.FirstOrDefaultAsync(q => q.StudentCode == id);
             if (std == null)
             {
                 return NotFound();
@@ -122,11 +144,11 @@ namespace MvcMovie.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(String id)
         {
-            if (_context.Students==null)
+            if (_context.Students == null)
             {
                 return Problem("Entity set 'ApplicationDbcontext.Students' is null.");
             }
-            var std =await _context.Students.FindAsync(id);
+            var std = await _context.Students.FindAsync(id);
             if (std != null)
             {
                 _context.Students.Remove(std);
@@ -136,13 +158,13 @@ namespace MvcMovie.Controllers
         }
         [HttpGet]
         public IActionResult Form_Models()   // ⬅ GET
-        {   
+        {
             return View();
-        } 
+        }
         [HttpPost]
         public IActionResult Form_Models(Student st)
-        {   
-            ViewBag.message="Hello "+st.FullName+ " "+st.StudentCode;
+        {
+            ViewBag.message = "Hello " + st.FullName + " " + st.StudentCode;
             return View();
         }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -152,7 +174,7 @@ namespace MvcMovie.Controllers
         }
         private bool PersonExists(string id)
         {
-            return(_context.Students?.Any(q=>q.StudentCode==id)).GetValueOrDefault();
+            return (_context.Students?.Any(q => q.StudentCode == id)).GetValueOrDefault();
         }
 
     }

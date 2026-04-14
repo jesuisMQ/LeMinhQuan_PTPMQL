@@ -16,6 +16,9 @@ namespace MvcMovie.Models.Entities
         [StringLength(50, ErrorMessage = "Họ tên tối đa 50 ký tự")]
         public string FullName { get; set; }
         [EmailAddress(ErrorMessage = "Email không hợp lệ")]
-        public string Email { get; set; }       
+        public string Email { get; set; }
+        public string? FacultyID { get; set; } = default!;
+        [ForeignKey("FacultyID")]
+        public virtual Faculty? Faculty { get; set; } = default!;       
     }
 }

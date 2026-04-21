@@ -71,14 +71,21 @@ namespace MvcMovie.Controllers
         {
             if (ModelState.IsValid)
             {
+                try
+                {
                 _context.Add(std);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
+                }
+                catch
+                {
+                  ModelState.AddModelError("StudentCode", "Mã sinh viên bị trùng");
+                }
             }
             ViewData["FacultyID"] = new SelectList(_context.Faculties, "FacultyID", "FacultyName", std.FacultyID);
             return View(std);
         }
-        public async Task<IActionResult> Edit(String id)
+        public async Task<IActionResult> Edit(string id)
         {
             if (id == null || _context.Students == null)
             {

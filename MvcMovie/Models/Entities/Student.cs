@@ -12,7 +12,7 @@ namespace MvcMovie.Models.Entities
         [RegularExpression(@"^[0-9]+$", ErrorMessage = "Chỉ được nhập số")]
         public string StudentCode { get; set; }
         [Required(ErrorMessage = "Họ tên không được để trống")]
-        [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "Chỉ được nhập chữ")]
+        [RegularExpression(@"^[a-zA-ZÀ-ỹ\s]+$", ErrorMessage = "Chỉ được nhập chữ")]
         [StringLength(50, ErrorMessage = "Họ tên tối đa 50 ký tự")]
         public string FullName { get; set; }
         [EmailAddress(ErrorMessage = "Email không hợp lệ")]

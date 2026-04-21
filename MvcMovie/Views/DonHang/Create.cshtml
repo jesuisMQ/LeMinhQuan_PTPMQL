@@ -1,0 +1,231 @@
+@using MvcMovie.Models.Baithuchanh9
+@model MvcMovie.Models.ViewModels.DonHangVM
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<div class="row">
+    <div class="col-md-6">
+
+        <form asp-action="Create">
+
+            <div class="form-group">
+                <label asp-for="CustomerID"></label>
+                <select asp-for="CustomerID" class="form-control" asp-items="ViewBag.CustomerID"></select>
+            </div>
+
+            <hr />
+
+            <h4>Sản phẩm</h4>
+
+            <div id="productContainer"></div>
+
+            <button type="button" class="btn btn-success" onclick="addProductRow()">
+                +
+            </button>
+
+            <hr />
+
+            <div class="form-group">
+                <label>Tổng tiền</label>
+                <input id="sum" name="SumAll" class="form-control" readonly />
+            </div>
+
+            <div class="form-group">
+                <label>Giờ hiện tại</label>
+                <input id="currentTime" class="form-control" readonly />
+            </div>
+
+            <hr />
+
+            <button type="submit" class="btn btn-primary">Create</button>
+
+        </form>
+
+    </div>
+</div>
+<script>
+let oldData = @Html.Raw(
+    System.Text.Json.JsonSerializer.Serialize(Model?.Products ?? new List<MvcMovie.Models.Baithuchanh9.ChitietDH> ())
+);
+let index = 0;
+// ✔ thêm dòng sản phẩm
+function addProductRow(p = null) {
+
+    let container = document.getElementById("productContainer");
+
+    let row = document.createElement("div");
+    row.classList.add("product-row");
+
+    row.innerHTML = `
+        <hr>
+
+        <div class="form-group">
+            <label>Product</label>
+            <select class="form-control"
+                    name="Products[${index}].ProductID"
+                    onchange="fillProduct(this, ${index})">
+                @foreach (var item in (SelectList)ViewBag.ProductID)
+                {
+                    <option value="@item.Value">@item.Text</option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Product ID</label>
+            <input id="pid_${index}"
+                   class="form-control"
+                   readonly />
+        </div>
+
+        <div class="form-group">
+            <label>Quantity</label>
+            <input id="qty_${index}"
+                   name="Products[${index}].Quantity"
+                   type="number"
+                   value="1"
+                   class="form-control"
+                   oninput="calcTotal()" />
+        </div>
+
+        <div class="form-group">
+            <label>Price</label>
+            <input id="price_${index}"
+                   name="Products[${index}].Price"
+                   type="number"
+                   class="form-control"
+                   readonly />
+        </div>
+        <button type="button" class="btn btn-danger" onclick="removeRow(this)">
+            -
+        </button>
+    `;
+
+    container.appendChild(row);
+
+     // 🔥 gọi luôn sau khi DOM chắc chắn có
+    let select = row.querySelector("select");
+
+     if (p) {
+    select.value = p.ProductID;
+    document.getElementById("qty_" + index).value = p.Quantity;
+    document.getElementById("price_" + index).value = p.Price;
+    document.getElementById("pid_" + index).value = p.ProductID;
+    }
+
+    // 🔥 nếu không có thì auto fill
+    else {
+        fillProduct(select, index);
+    }
+    index++;
+
+    calcTotal();
+}
+window.onload = function () {
+
+    index = 0;
+
+    if (oldData.length > 0) {
+
+        oldData.forEach(p => addProductRow(p));
+
+    } else {
+
+        addProductRow();
+    }
+};
+
+// ✔ lấy price từ server
+function removeRow(btn) {
+
+    // lấy row chứa button
+    let row = btn.closest(".product-row");
+
+    // xóa row đó
+    row.remove();
+
+    // cập nhật lại tổng tiền
+    calcTotal();
+
+    // (quan trọng) nếu bạn dùng index để submit MVC
+    reIndex();
+}
+function reIndex() {
+
+    let rows = document.querySelectorAll(".product-row");
+
+    rows.forEach((row, i) => {
+
+        let select = row.querySelector("select");
+        let qty = row.querySelector("[name$='.Quantity']");
+        let price = row.querySelector("[name$='.Price']");
+        let pid = row.querySelector("[id^='pid_']");
+
+        select.name = `Products[${i}].ProductID`;
+        qty.name = `Products[${i}].Quantity`;
+        price.name = `Products[${i}].Price`;
+
+        if (pid) pid.id = `pid_${i}`;
+    });
+}
+
+function fillProduct(select, i) {
+
+    let productId = select.value;
+
+    fetch('/DonHang/GetProduct?productId=' + productId)
+        .then(res => res.json())
+        .then(data => {
+
+            document.getElementById("pid_" + i).value = data.productID;
+            document.getElementById("price_" + i).value = data.price;
+
+            calcTotal();
+        });
+}
+
+// ✔ tính tổng tất cả dòng
+function calcTotal() {
+
+    let rows = document.querySelectorAll(".product-row");
+
+    let total = 0;
+
+    rows.forEach(row => {
+
+        let qtyInput = row.querySelector("[name$='.Quantity']");
+        let priceInput = row.querySelector("[name$='.Price']");
+
+        let qty = parseFloat(qtyInput?.value) || 0;
+        let price = parseFloat(priceInput?.value) || 0;
+
+        total += qty * price;
+    });
+
+    document.getElementById("sum").value = total;
+}
+
+// ✔ realtime clock
+function updateTime() {
+
+    const now = new Date();
+
+    document.getElementById("currentTime").value =
+        now.getFullYear() + "-" +
+        String(now.getMonth() + 1).padStart(2, '0') + "-" +
+        String(now.getDate()).padStart(2, '0') + " " +
+        String(now.getHours()).padStart(2, '0') + ":" +
+        String(now.getMinutes()).padStart(2, '0') + ":" +
+        String(now.getSeconds()).padStart(2, '0');
+}
+
+// init
+
+updateTime();
+
+setInterval(updateTime, 1000);
+</script>

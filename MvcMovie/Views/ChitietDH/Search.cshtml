@@ -1,0 +1,78 @@
+@model MvcMovie.Models.ViewModels.CustomerFullVM
+
+@{
+    ViewData["Title"] = "Search";
+}
+
+<h2>Tìm khách hàng</h2>
+
+<form asp-action="Search" method="post">
+    <input asp-for="CustomerID" class="form-control" placeholder="Nhập CustomerID" />
+    <span asp-validation-for="CustomerID" class="text-danger"></span>
+
+    <button type="submit" class="btn btn-primary mt-2">Tìm</button>
+</form>
+
+<hr />
+@{
+    var orders = ViewBag.Orders as List<MvcMovie.Models.Baithuchanh9.DonHang>;
+    var details = ViewBag.Details as List<MvcMovie.Models.Baithuchanh9.ChitietDH>;
+}
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="text-danger">
+        @foreach (var err in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+        {
+            <p>@err.ErrorMessage</p>
+        }
+    </div>
+}
+
+@if (Model?.Customer != null)
+{
+    <h3>Thông tin khách hàng</h3>
+    <p><b>ID:</b> @Model.Customer.CustomerID</p>
+    <p><b>Tên:</b> @Model.Customer.CustomerName</p>
+
+    <hr />
+
+    <h3>Đơn hàng</h3>
+
+
+    @if (orders != null && orders.Count > 0)
+    {
+        foreach (var order in orders)
+        {
+            <div style="border:1px solid #ccc; padding:10px; margin-bottom:10px">
+                <h4>Order: @order.OrderID</h4>
+
+                <table style="border:1px" class="table">
+                    <tr>
+                        <th>ProductID</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Sum</th>
+                    </tr>
+
+                    @foreach (var d in details.Where(x => x.OrderID == order.OrderID))
+                    {
+                        <tr>
+                            <td>@d.ProductID</td>
+                            <td>@d.Quantity</td>
+                            <td>@d.Price</td>
+                            <td>@d.SumAll</td>
+                        </tr>
+                    }
+                        <tr>
+                            <td style="font-weight:bold" colspan="3">Thành Tiền:</td>
+                            <td>@order.Total</td>
+                        </tr>
+                </table>
+            </div>
+        }
+    }
+    else
+    {
+        <p>Không có đơn hàng</p>
+    }
+}

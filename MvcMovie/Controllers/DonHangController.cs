@@ -90,7 +90,7 @@ namespace MvcMovie.Controllers
             }
             else
             {
-                int number = int.Parse(lastOrder.OrderID);
+                int number = int.Parse(lastOrder.OrderID.Replace("DH", ""));
                 number++;
 
                 newId = "DH" + number.ToString("D3"); // format 3 chữ số

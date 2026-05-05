@@ -4,7 +4,16 @@
 }
 <h1>Create</h1>
 <h4>Student</h4>
+<hr>
+<form asp-action="Upload" enctype="multipart/form-data">
+    <div class="row form-control">
+        <label class="col-sm-2">Import data from Excel:</label>
+        <input type="file" name="file" class="col-sm-4" >
+        <input type="submit" value="Upload" class="btn btn-primary col-sm-1">
+    </div>
+ </form>
 <hr/>
+
 <form asp-action="Create" method="post">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <input type="text" asp-for="FullName" placeholder="Nhập tên vào đây" />

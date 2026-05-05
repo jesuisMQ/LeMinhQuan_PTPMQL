@@ -12,17 +12,92 @@ using MvcMovie.Data;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Linq.Expressions;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.StaticFiles;
+using MvcMovie.Models.Process;
+using OfficeOpenXml;
 namespace MvcMovie.Controllers
 {
 
     public class StudentController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private ExcelProcess _excelProcess = new ExcelProcess();
         public StudentController(ApplicationDbContext context)
         {
             _context = context;
         }
+        public IActionResult DownLoad()
+        {
+            var fileName ="YourFileName"+".xlsx";
+            ExcelPackage.License.SetNonCommercialPersonal("StudentProject");
+            using (ExcelPackage excelPackage=new ExcelPackage())
+            {
+                ExcelWorksheet ws= excelPackage.Workbook.Worksheets.Add("Sheet 1");
+                ws.Cells["A1"].Value="StudentID";
+                ws.Cells["B1"].Value="FullName";
+                ws.Cells["C1"].Value="Email";
+                ws.Cells["D1"].Value="Faculty";
+                var stdList =_context.Students.ToList();
+                ws.Cells["A2"].LoadFromCollection(stdList);
+                var stream = new MemoryStream(excelPackage.GetAsByteArray());
+                return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+
+            }
+        }
         // GET: Movies
+        public async Task<IActionResult> Upload()
+        {
+            return View();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Upload(IFormFile file)
+        {
+            if (file == null)
+            {
+                ModelState.AddModelError("", "Please choose a file");
+                return View();
+            }
+
+            string fileExtension = Path.GetExtension(file.FileName).ToLower();
+
+            if (fileExtension != ".xls" && fileExtension != ".xlsx" )
+            {
+                ModelState.AddModelError("", "Please choose Excel file to upload");
+                return View();
+            }
+
+            var folder = Path.Combine(Directory.GetCurrentDirectory(), "Uploads", "Excels");
+
+            if (!Directory.Exists(folder))
+            {
+                Directory.CreateDirectory(folder);
+            }
+
+            var fileName = DateTime.Now.ToString("yyyyMMdd_HHmmss") + fileExtension;
+            var filePath = Path.Combine(folder, fileName);
+
+            // 💾 SAVE FILE
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            // 📖 READ EXCEL (PHẢI ĐỂ NGOÀI USING)
+            var data = ExcelProcess.ImportFromExcel(filePath);
+
+            // 💾 SAVE DB
+            foreach (var item in data)
+            {
+                var std = item.student;
+
+                _context.Add(std);
+            }
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
         public async Task<IActionResult> Index()
         {
             var result = await _context.Students
@@ -73,13 +148,13 @@ namespace MvcMovie.Controllers
             {
                 try
                 {
-                _context.Add(std);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                    _context.Add(std);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
                 catch
                 {
-                  ModelState.AddModelError("StudentCode", "Mã sinh viên bị trùng");
+                    ModelState.AddModelError("StudentCode", "Mã sinh viên bị trùng");
                 }
             }
             ViewData["FacultyID"] = new SelectList(_context.Faculties, "FacultyID", "FacultyName", std.FacultyID);

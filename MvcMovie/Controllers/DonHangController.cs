@@ -113,6 +113,13 @@ namespace MvcMovie.Controllers
 
                     return View(vm);
                 }
+                if (!ModelState.IsValid)
+                {
+                    ViewBag.CustomerID = new SelectList(_context.Customer, "CustomerID", "CustomerID", vm.CustomerID);
+                    ViewBag.ProductID = new SelectList(_context.Products, "ProductID", "ProductName");
+                    return View(vm);
+                }
+
             }
 
             // 2. tạo đơn hàng

@@ -1,0 +1,47 @@
+@model IEnumerable<MvcMovie.Models.Baithuchanh12.IssueNote>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.TimeStamp)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Supplier)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Total)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.TimeStamp)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Supplier.SupplierID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Total)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.IN_ID">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.IN_ID">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.IN_ID">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

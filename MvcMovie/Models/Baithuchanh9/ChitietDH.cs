@@ -15,7 +15,8 @@ public class ChitietDH
     public string ProductID { get; set; }
     [ForeignKey("ProductID")]
     public SanPham? Products { get; set; }
-
+    [Required(ErrorMessage = "Không được để trống")]
+    [Range(1, int.MaxValue, ErrorMessage = "Phải lớn hơn hoặc bằng 1")]
     public int Quantity { get; set; }
 
     [DisplayFormat(DataFormatString = "{0:#,##0}")]

@@ -1,0 +1,73 @@
+@model MvcMovie.Models.Entities.Student
+@using MvcMovie.Models.Entities
+
+
+<div class="modal fade" id="editStudentModal" tabindex="-1" aria-labelledby="editStudentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h5 class="modal-title" id="editStudentModalLabel">
+                    Edit Student
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <!-- Form -->
+            <form id="editStudentForm">
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">
+                                FullName
+                            </label>
+                            <input type="text" asp-for="FullName" placeholder="Nhập tên vào đây" />
+                            <span asp-validation-for="FullName"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">
+                                StudentCode
+                            </label>
+                            <input type="text" asp-for="StudentCode" placeholder="Nhập msv vào đây" />
+                            <span asp-validation-for="StudentCode"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">
+                                Email
+                            </label>
+                            <input type="text" asp-for="Email" placeholder="Nhập email vào đây" />
+                            <span asp-validation-for="Email"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">
+                                Faculty
+                            </label>
+                            <select asp-for="FacultyID" class="form-control" asp-items="ViewBag.FacultyID"></select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">
+                                Status
+                            </label>
+                            <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<StudentStatus>()"></select>
+                        </div>
+                    </div>
+            
+                    <!-- Modal Footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            Close
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            Save Student
+                        </button>
+                    </div>
+                </div>
+            </form>
+        
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

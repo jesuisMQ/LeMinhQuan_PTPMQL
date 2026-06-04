@@ -1,49 +1,23 @@
-@model IEnumerable<MvcMovie.Models.ViewModels.StudentVM>
+<div class="container mt-4">
+    <h2> Student Management</h2>
+    <div id="studentTableContainer"></div>
+</div>
+<div id= "modalContainer"></div>
+@section Scripts {
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
 
-@{
-    ViewData["Title"]="Index";
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
+
+    <script src="~/js/student/student.js"></script>
+    <script src="~/js/student/student-table.js"></script>
+    <script src="~/js/student/student-create.js"></script>
+    <script src="~/js/student/student-delete.js"></script>
+    <script src="~/js/student/student-edit.js"></script>
+    
+    <script src="~/js/student/search.js"></script>
+
+    
+
+
 }
-<h1>Index</h1>
-<a asp-action="Create">Create new</a>
-<a class="btn-success" asp-action="Download">Tải về</a>
-<table>
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model=>model.FullName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model=>model.StudentCode)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model=>model.Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FacultyName)
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach(var item in Model){
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem=>item.FullName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem=>item.StudentCode)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem=>item.Email)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FacultyName)
-                </td>
-                <td>
-                <a asp-action="Edit" asp-route-id="@item.StudentCode" class="btn btn-warning">Edit</a>
-                <a asp-action="Details" asp-route-id="@item.StudentCode" class="btn btn-success">Details</a>
-                <a asp-action="Delete" asp-route-id="@item.StudentCode" class="btn btn-danger">Delete</a>
-            </td>
-            </tr>
-        }
-    </tbody>
-</table>

@@ -1,0 +1,110 @@
+@model MvcMovie.Models.ViewModels.StudentSearchVM
+@using MvcMovie.Models.Entities
+<div class="modal fade" id="searchModal" tabindex="-1" aria-hidden="true">
+
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title">
+                    🔍 Tìm sinh viên
+                </h5>
+
+                <button type="button" class="btn-close" data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+            <div class="modal-body">
+
+                <form id="searchForm" asp-action="Search" method="post">
+
+                    @Html.AntiForgeryToken()
+                    <div asp-validation-summary="All" class="text-danger">
+                    </div>
+
+                
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Student Code
+                        </label>
+
+                        <input asp-for="StudentCode" class="form-control" placeholder="Nhập mã sinh viên" />
+
+                        
+                        <br />
+                        <label class="form-label">
+                            FacultyName
+                        </label>
+
+                        <select id="facultySelect" asp-for="FacultyID" asp-items="ViewBag.FacultyID"
+                                class="form-select">
+
+                            <option value="">
+                                -- Select Faculty --
+                            </option>
+
+                        </select>
+
+                        
+                        <br />
+                        <label class="form-label mt-3">
+                            FacultyID
+                        </label>
+
+                        <input id="facultyIdDisplay" readonly class="form-control" />
+
+                        <label class="form-label">
+                            Status
+                        </label>
+
+                       <select asp-for="Status" asp-items="Html.GetEnumSelectList<StudentStatus>()"
+                                class="form-select">
+
+                            <option value="">
+                                -- Select Status--
+                            </option>
+
+                        </select>
+
+                       
+                    </div>
+
+                    <div class="modal-footer">
+
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            Close
+                        </button>
+
+                        <button type="submit" class="btn btn-primary">
+                            Search
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+<script>
+    $("#facultySelect").on("change", function () {
+
+        const facultyId = $(this).val();
+
+        $("#facultyIdDisplay").val(facultyId);
+    });
+</script>

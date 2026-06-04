@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.StaticFiles;
 using MvcMovie.Models.Process;
 using OfficeOpenXml;
+using AspNetCoreGeneratedDocument;
 namespace MvcMovie.Controllers
 {
 
@@ -100,16 +101,41 @@ namespace MvcMovie.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            var result = await _context.Students
-                            .Select(s => new StudentVM
-                            {
-                                StudentCode = s.StudentCode,
-                                FullName = s.FullName,
-                                FacultyName = s.Faculty!.FacultyName
-                            })
-                            .ToListAsync();
-            return View(result);
+            // var result = await _context.Students
+            //                 .Select(s => new StudentVM
+            //                 {
+            //                     StudentCode = s.StudentCode,
+            //                     FullName = s.FullName,
+            //                     FacultyName = s.Faculty!.FacultyName
+            //                 })
+            //                 .ToListAsync();
+            // return View(result);
+            return View();
         }
+
+        public async Task<IActionResult> GetStudents(int page = 1, int pageSize = 10)
+        {
+            var query = _context.Students.Include(x=>x.Faculty)//include thằng navigation không phải foreign key
+                .AsNoTracking();
+
+            var totalItems = await query.CountAsync();
+
+            var students = await query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            var result = new PagedResult<Student>
+            {
+                Items = students,
+                CurrentPage = page,
+                PageSize = pageSize,
+                TotalItems = totalItems
+            };
+
+            return PartialView("_StudentTable", result);
+        }
+
         public async Task<IActionResult> Details(string id)
         {
             if (id == null)
@@ -134,130 +160,296 @@ namespace MvcMovie.Controllers
             return View(student);
         }
         // GET: Student/Create
+        // public IActionResult Create()
+        // {
+        //     ViewData["FacultyID"] = new SelectList(_context.Faculties, "FacultyID", "FacultyName");
+        //     return View();
+        // }
+        // [HttpPost]
+        // [ValidateAntiForgeryToken]
+
+        // public async Task<IActionResult> Create([Bind("FullName,StudentCode,Email,FacultyID")] Student std)
+        // {
+        //     if (ModelState.IsValid)
+        //     {
+        //         try
+        //         {
+        //             _context.Add(std);
+        //             await _context.SaveChangesAsync();
+        //             return RedirectToAction(nameof(Index));
+        //         }
+        //         catch
+        //         {
+        //             ModelState.AddModelError("StudentCode", "Mã sinh viên bị trùng");
+        //         }
+        //     }
+        //     ViewData["FacultyID"] = new SelectList(_context.Faculties, "FacultyID", "FacultyName", std.FacultyID);
+        //     return View(std);
+        // }
+        // public async Task<IActionResult> Edit(string id)
+        // {
+        //     if (id == null || _context.Students == null)
+        //     {
+        //         return NotFound();
+
+        //     }
+
+        //     var std = await _context.Students.FindAsync(id);
+        //     if (std == null)
+        //     {
+        //         return NotFound();
+        //     }
+        //     ViewData["FacultyID"] = new SelectList(_context.Faculties, "FacultyID", "FacultyName", std.FacultyID);
+        //     return View(std);
+        // }
+        // [HttpPost]
+        // [ValidateAntiForgeryToken]
+        // public async Task<IActionResult> Edit(string id, [Bind("FullName,StudentCode,Email,FacultyID")] Student std)
+        // {
+        //     if (id != std.StudentCode)
+        //     {
+        //         return NotFound();
+        //     }
+        //     if (ModelState.IsValid)
+        //     {
+        //         try
+        //         {
+        //             _context.Students.Update(std);
+        //             await _context.SaveChangesAsync();
+        //         }
+
+        //         catch (DbUpdateConcurrencyException)
+        //         {
+        //             if (!PersonExists(std.StudentCode))
+        //             {
+        //                 return NotFound();
+        //             }
+        //             else
+        //             {
+        //                 throw;
+        //             }
+        //         }
+        //         return RedirectToAction(nameof(Index));
+        //     }
+        //     ViewData["FacultyID"] = new SelectList(_context.Faculties, "FacultyID", "FacultyName", std.FacultyID);
+        //     return View(std);
+        // }
+        // public async Task<IActionResult> Delete(String id)
+        // {
+        //     if (id == null || _context.Students == null)
+        //     {
+        //         return NotFound();
+        //     }
+        //     var std = await _context.Students.FirstOrDefaultAsync(q => q.StudentCode == id);
+        //     if (std == null)
+        //     {
+        //         return NotFound();
+        //     }
+
+        //     return View(std);
+        // }
+        // [HttpPost, ActionName("Delete")]
+        // [ValidateAntiForgeryToken]
+        // public async Task<IActionResult> DeleteConfirmed(String id)
+        // {
+        //     if (_context.Students == null)
+        //     {
+        //         return Problem("Entity set 'ApplicationDbcontext.Students' is null.");
+        //     }
+        //     var std = await _context.Students.FindAsync(id);
+        //     if (std != null)
+        //     {
+        //         _context.Students.Remove(std);
+        //     }
+        //     await _context.SaveChangesAsync();
+        //     return RedirectToAction(nameof(Index));
+        // }
+        // [HttpGet]
+        // public IActionResult Form_Models()   // ⬅ GET
+        // {
+        //     return View();
+        // }
+        // [HttpPost]
+        // public IActionResult Form_Models(Student st)
+        // {
+        //     ViewBag.message = "Hello " + st.FullName + " " + st.StudentCode;
+        //     return View();
+        // }
+        // [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        // public IActionResult Error()
+        // {
+        //     return View("Error!");
+        // }
+        // private bool PersonExists(string id)
+        // {
+        //     return (_context.Students?.Any(q => q.StudentCode == id)).GetValueOrDefault();
+        // }
         public IActionResult Create()
         {
-            ViewData["FacultyID"] = new SelectList(_context.Faculties, "FacultyID", "FacultyName");
-            return View();
+            ViewData["FacultyID"]=new SelectList(_context.Faculties,"FacultyID","FacultyName");
+            return PartialView("_Create");
+            
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-
-        public async Task<IActionResult> Create([Bind("FullName,StudentCode,Email,FacultyID")] Student std)
+        public async Task<IActionResult> Create(Student student)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                try
-                {
-                    _context.Add(std);
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
-                }
-                catch
-                {
-                    ModelState.AddModelError("StudentCode", "Mã sinh viên bị trùng");
-                }
+                ViewData["FacultyID"]=new SelectList(_context.Faculties,"FacultyID","FacultyName",student.FacultyID);
+                return PartialView("_Create", student);
             }
-            ViewData["FacultyID"] = new SelectList(_context.Faculties, "FacultyID", "FacultyName", std.FacultyID);
-            return View(std);
+
+            _context.Students.Add(student);
+
+            await _context.SaveChangesAsync();
+
+            return Json(new
+            {
+                success = true
+            });
         }
+
+
+        [HttpGet]
         public async Task<IActionResult> Edit(string id)
         {
-            if (id == null || _context.Students == null)
-            {
-                return NotFound();
+            var student = await _context.Students.FindAsync(id);
 
-            }
-
-            var std = await _context.Students.FindAsync(id);
-            if (std == null)
+            if (student == null)
             {
                 return NotFound();
             }
-            ViewData["FacultyID"] = new SelectList(_context.Faculties, "FacultyID", "FacultyName", std.FacultyID);
-            return View(std);
+            ViewData["FacultyID"]=new SelectList(_context.Faculties,"FacultyID","FacultyName");
+            return PartialView("_Edit", student);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("FullName,StudentCode,Email,FacultyID")] Student std)
+        public async Task<IActionResult> Edit(Student student)
         {
-            if (id != std.StudentCode)
+            if (!ModelState.IsValid)
             {
-                return NotFound();
+                ViewData["FacultyID"]=new SelectList(_context.Faculties,"FacultyID","FacultyName",student.FacultyID);
+                return PartialView("_Edit", student);
             }
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Students.Update(std);
-                    await _context.SaveChangesAsync();
-                }
 
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!PersonExists(std.StudentCode))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["FacultyID"] = new SelectList(_context.Faculties, "FacultyID", "FacultyName", std.FacultyID);
-            return View(std);
-        }
-        public async Task<IActionResult> Delete(String id)
-        {
-            if (id == null || _context.Students == null)
-            {
-                return NotFound();
-            }
-            var std = await _context.Students.FirstOrDefaultAsync(q => q.StudentCode == id);
-            if (std == null)
+            var existingStudent = await _context.Students.FindAsync(student.StudentCode);
+
+            if (existingStudent == null)
             {
                 return NotFound();
             }
 
-            return View(std);
-        }
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(String id)
-        {
-            if (_context.Students == null)
-            {
-                return Problem("Entity set 'ApplicationDbcontext.Students' is null.");
-            }
-            var std = await _context.Students.FindAsync(id);
-            if (std != null)
-            {
-                _context.Students.Remove(std);
-            }
+            existingStudent.StudentCode = student.StudentCode;
+            existingStudent.FullName = student.FullName;
+            existingStudent.Email = student.Email;
+            existingStudent.FacultyID = student.FacultyID;
+            existingStudent.Status = student.Status;
+            
+
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-        [HttpGet]
-        public IActionResult Form_Models()   // ⬅ GET
-        {
-            return View();
-        }
-        [HttpPost]
-        public IActionResult Form_Models(Student st)
-        {
-            ViewBag.message = "Hello " + st.FullName + " " + st.StudentCode;
-            return View();
-        }
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View("Error!");
-        }
-        private bool PersonExists(string id)
-        {
-            return (_context.Students?.Any(q => q.StudentCode == id)).GetValueOrDefault();
+
+            return Json(new
+            {
+                success = true
+            });
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Delete(string id )
+        {
+            var student = await _context.Students
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.StudentCode== id);
+
+            if (student == null)
+            {
+                return NotFound();
+            }
+
+            return PartialView("_Delete", student );
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(Student student)
+        {
+            var existingStudent = await _context.Students
+                .FindAsync(student.StudentCode);
+
+            if (existingStudent == null)
+            {
+                return Json(new
+                {
+                    success = false
+                });
+            }
+
+            _context.Students.Remove(existingStudent);
+
+            await _context.SaveChangesAsync();
+
+            return Json(new
+            {
+                success = true
+            });
+        }
+
+
+
+        // GET: ChitietDH
+        public async Task<IActionResult> Search()
+        {
+
+            ViewData["FacultyID"] = new SelectList(_context.Faculties, "FacultyID", "FacultyName");
+            return PartialView("Search", new StudentSearchVM());
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Search(StudentSearchVM model, int page = 1, int pageSize = 10)
+        {
+
+            if (!ModelState.IsValid)
+            {
+                ViewData["FacultyID"] = new SelectList(
+                    _context.Faculties,
+                    "FacultyID",
+                    "FacultyName"
+                );
+
+                return PartialView("Search", model);
+            }
+
+
+            // lấy customer
+            var query = _context.Students
+                .Include(x => x.Faculty)
+                .AsQueryable();
+            if (!string.IsNullOrWhiteSpace(model.StudentCode))
+            {
+                query = query.Where(x =>
+                    x.StudentCode == model.StudentCode);
+            }
+            if (model.FacultyID != null)
+            {
+                query = query.Where(x =>
+                    x.FacultyID == model.FacultyID);
+            }
+            if (model.Status != null)
+            {
+                query = query.Where(x =>
+                    x.Status == model.Status);
+            }
+            var totalItems = query.Count();
+            var result = new PagedResult<Student>
+            {
+                Items = query.ToList(),
+                CurrentPage = page,
+                PageSize = pageSize,
+                TotalItems = totalItems,
+            };
+            return PartialView("_StudentTable", result);
+
+        }
     }
 }

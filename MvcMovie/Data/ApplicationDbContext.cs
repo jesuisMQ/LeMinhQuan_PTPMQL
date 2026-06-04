@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using MvcMovie.Models.Baithuchanh12;
+using MvcMovie.Models.Baithuchanh13;
 using MvcMovie.Models.Baithuchanh9;
 using MvcMovie.Models.Entities;
 
@@ -18,5 +20,14 @@ namespace MvcMovie.Data
         public DbSet<DonHang> Orders { get; set; }
         public DbSet<ChitietDH> Details { get; set; }
         public DbSet<SanPham> Products { get; set; }
+        public DbSet<Supplier> Suppliers { get; set; }
+        public DbSet<Device> Devices { get; set; }
+        public DbSet<Receipt> Receipts { get; set; }
+        public DbSet<DeviceType> DeviceTypes { get; set; }
+        public DbSet<ReceiptDetails> ReceiptDetails { get; set; }
+        public DbSet<IssueNote> IssueNotes { get; set; }
+         public DbSet<IssueNoteDetails> IssueNoteDetails { get; set; }
+        public DbSet<MvcMovie.Models.Baithuchanh12.IssueNote> IssueNote { get; set; } = default!;
+        public DbSet<Book> Books { get; set; }
     }
 }

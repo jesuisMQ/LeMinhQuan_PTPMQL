@@ -44,6 +44,7 @@ namespace MvcMovie.Controllers
                 ModelState.AddModelError("", "Không tìm thấy khách hàng");
                 return View(vm);
             }
+            ModelState.Remove("Customer");
 
             // lấy đơn hàng
             var orders = _context.Orders
@@ -53,6 +54,15 @@ namespace MvcMovie.Controllers
             // lấy chi tiết đơn hàng
             var details = _context.Details
                 .Where(d => orders.Select(o => o.OrderID).Contains(d.OrderID))
+                .GroupBy(d => new { d.OrderID, d.ProductID })
+                .Select(g => new
+                {
+                    OrderID = g.Key.OrderID, 
+                    ProductID = g.Key.ProductID,
+                    Price=g.First().Price,
+                    Quantity = g.Sum(x => x.Quantity),
+                    SumAll = g.Sum(x => x.SumAll)
+                })
                 .ToList();
 
             vm.Customer = customer;

@@ -16,7 +16,7 @@
 <hr />
 @{
     var orders = ViewBag.Orders as List<MvcMovie.Models.Baithuchanh9.DonHang>;
-    var details = ViewBag.Details as List<MvcMovie.Models.Baithuchanh9.ChitietDH>;
+    var details = ViewBag.Details  as IEnumerable<dynamic> ?? new List<dynamic>();
 }
 @if (!ViewData.ModelState.IsValid)
 {
